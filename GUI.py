@@ -6,7 +6,13 @@ import sys
 import os
 from pathlib import Path
 import subprocess
-                    
+
+
+dir_path = os.getenv('PWD')
+cur_path = os.path.abspath(__file__)[:-7]
+dir_path = os.path.join(dir_path, cur_path)
+os.chdir(dir_path)
+                 
 class App(QMainWindow):
     def __init__(self):
         super().__init__()
@@ -67,8 +73,9 @@ class App(QMainWindow):
             new_name = str(elem)[:-4]
             os.system('iconv -c -f GB2312 -t UTF-8 %s >> %s' % (elem, (elem[:-4])))
             os.system("mv %s '%s'" % (elem[:-4], new_dir))
-        
-app = QApplication(sys.argv)
-window = App()
-window.show()
-sys.exit(app.exec_())
+
+if __name__ == "__main__":
+    app = QApplication(sys.argv)
+    window = App()
+    window.show()
+    sys.exit(app.exec_())
