@@ -6,10 +6,10 @@ import sys
 import os
 from pathlib import Path
 import subprocess
-
-
+ 
 dir_path = os.getenv('PWD')
-cur_path = os.path.abspath(__file__)[:-7]
+cur_path = os.path.abspath(__file__)[:-14]
+print('debug:',cur_path)
 dir_path = os.path.join(dir_path, cur_path)
 os.chdir(dir_path)
                  
@@ -46,13 +46,12 @@ class App(QMainWindow):
         
         file, result = QInputDialog.getText(self, "Single File Mode", "Enter the file name:")
         if result:
+            decoded = file[:-4] + ' decoded'
             file += '.txt'
         
-        decoded = file[:-4] + ' decoded'
-        
-        os.system('iconv -c -f GB2312 -t UTF-8 %s >> %s' % (file, file[:-4]))
-        os.makedirs(decoded)
-        os.system("mv %s '%s'" % (file[:-4],decoded))
+            os.system('iconv -c -f GB2312 -t UTF-8 %s >> %s' % (file, file[:-4]))
+            os.makedirs(decoded)
+            os.system("mv %s '%s'" % (file[:-4],decoded))
     
     def multi(self):    
         self.textbox = QLineEdit(self)
@@ -63,16 +62,16 @@ class App(QMainWindow):
                 
         folder_path = os.path.abspath(folder)
         os.chdir(folder_path)
+        if result:
+            new_dir ='the decoded files'
 
-        new_dir = 'the decoded files'
+            file_list = [elem for elem in os.listdir(folder_path) if ".txt" in elem]
 
-        file_list = [elem for elem in os.listdir(folder_path) if ".txt" in elem]
-
-        os.makedirs(new_dir)
-        for elem in file_list:
-            new_name = str(elem)[:-4]
-            os.system('iconv -c -f GB2312 -t UTF-8 %s >> %s' % (elem, (elem[:-4])))
-            os.system("mv %s '%s'" % (elem[:-4], new_dir))
+            os.makedirs(new_dir)
+            for elem in file_list:
+                new_name = str(elem)[:-4]
+                os.system('iconv -c -f GB2312 -t UTF-8 %s >> %s' % (elem, (elem[:-4])))
+                os.system("mv %s '%s'" % (elem[:-4], new_dir))
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
